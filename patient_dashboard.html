@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALFASEHAT.ID - Patient Portal Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            /* Tema Warna Hijau */
+            --primary-color: #28a745; /* Hijau cerah */
+            --secondary-color: #1e7e34; /* Hijau lebih gelap */
+            --accent-color: #dc3545;    /* Merah untuk aksen/error */
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --text-color: #495057;
+            --text-light: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--light-color);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            margin-bottom: 5px;
+            font-size: 2.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 2fr; /* Sidebar and main content */
+            }
+            .main-content {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 250px 1fr; /* More fixed sidebar width */
+            }
+        }
+
+        .sidebar {
+            background-color: #f0f3f6; /* Warna latar belakang sidebar mungkin tetap netral atau disesuaikan dengan nuansa hijau */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar h2 {
+            color: var(--secondary-color); /* Menggunakan warna hijau gelap */
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar ul li a {
+            display: block;
+            padding: 10px 15px;
+            background-color: white;
+            border-radius: 5px;
+            color: var(--primary-color); /* Teks tautan sidebar menjadi hijau cerah */
+            font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
+            background-color: var(--primary-color); /* Latar belakang hover/aktif menjadi hijau cerah */
+            color: white;
+        }
+        .sidebar ul li a.active {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .dashboard-section h3 {
+            color: var(--primary-color); /* Judul bagian menjadi hijau cerah */
+            margin-bottom: 15px;
+            font-size: 1.7rem;
+            border-bottom: 2px solid var(--light-color);
+            padding-bottom: 10px;
+        }
+
+        .dashboard-section h4 {
+            color: var(--secondary-color); /* Sub-judul menjadi hijau gelap */
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .dashboard-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .dashboard-section ul li {
+            margin-bottom: 8px;
+            padding-left: 0;
+        }
+
+        .dashboard-section ul li strong {
+            color: var(--secondary-color); /* Teks tebal di daftar menjadi hijau gelap */
+        }
+
+        .info-card {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .info-card p {
+            margin: 0;
+        }
+
+        .button-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color); /* Tombol primer menjadi hijau cerah */
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color); /* Hover tombol primer menjadi hijau gelap */
+            border-color: var(--secondary-color);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-color); /* Teks tombol sekunder menjadi hijau cerah */
+            border-color: var(--primary-color); /* Batas tombol sekunder menjadi hijau cerah */
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--primary-color); /* Hover tombol sekunder menjadi hijau cerah */
+            color: white;
+        }
+
+        /* Small button adjustment */
+        .btn-small {
+            padding: 7px 12px;
+            font-size: 0.9rem;
+        }
+
+        .message-item {
+            border-bottom: 1px dashed var(--light-color);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .message-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .message-item strong {
+            color: var(--secondary-color); /* Teks kuat di pesan menjadi hijau gelap */
+        }
+        .message-item span.date {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            display: block;
+            margin-top: 5px;
+        }
+
+        .form-section {
+            margin-top: 15px;
+        }
+        .form-section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .form-section input[type="text"],
+        .form-section input[type="email"],
+        .form-section input[type="date"],
+        .form-section textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-section textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-section .btn {
+            width: auto;
+        }
+
+        .edu-item {
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--light-color);
+            padding-bottom: 10px;
+        }
+        .edu-item h4 {
+            color: var(--secondary-color); /* Judul edukasi menjadi hijau gelap */
+            margin-bottom: 5px;
+        }
+        .edu-item a {
+            font-weight: 500;
+            color: var(--primary-color); /* Tautan edukasi menjadi hijau cerah */
+            text-decoration: none;
+        }
+        .edu-item a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Selamat Datang, SALWA SALSABILA!</h1>
+            <p>Dashboard Portal Pasien ALFASEHAT.ID</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <aside class="sidebar">
+                <h2>Menu Portal</h2>
+                <ul>
+                    <li><a href="#profile" class="active"><i class="fas fa-user"></i> Profil Saya</a></li>
+                    <li><a href="#medical-records"><i class="fas fa-file-medical"></i> Rekam Medis</a></li>
+                    <li><a href="#appointments"><i class="fas fa-calendar-alt"></i> Janji Temu</a></li>
+                    <li><a href="#messages"><i class="fas fa-envelope"></i> Pesan & Kotak Masuk</a></li>
+                    <li><a href="#billing"><i class="fas fa-dollar-sign"></i> Pembayaran & Tagihan</a></li>
+                    <li><a href="#forms"><i class="fas fa-clipboard-list"></i> Formulir Pra-Kunjungan</a></li>
+                    <li><a href="#education"><i class="fas fa-book-medical"></i> Edukasi Kesehatan</a></li>
+                    <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </aside>
+
+            <main class="main-content">
+                <section class="dashboard-section" id="profile">
+                    <h3>Data Pribadi Pasien</h3>
+                    <div class="info-card">
+                        <p><strong>Nama Lengkap:</strong> SALWA SALSABILA</p>
+                        <p><strong>Tanggal Lahir:</strong> 9 JUNI 2009</p>
+                        <p><strong>Alamat:</strong> Jl. HJ.Basir No. 5, Pondok Serut</p>
+                        <p><strong>Nomor Telepon:</strong> +62 896 5251 2590</p>
+                        <p><strong>Email:</strong> salwasalsabila969@email.com</p>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-primary">Edit Profil</button>
+                        <button class="btn btn-secondary">Ubah Kata Sandi</button>
+                    </div>
+                </section>
+
+                <section class="dashboard-section" id="medical-records">
+                    <h3>Rekam Medis</h3>
+
+                    <h4>Riwayat Kunjungan</h4>
+                    <ul>
+                        <li class="info-card">
+                            <p><strong>Tanggal:</strong> 20 April 2025</p>
+                            <p><strong>Dokter:</strong> Dr. Alfa (Kardiologi)</p>
+                            <p><strong>Tujuan:</strong> Konsultasi Rutin</p>
+                            <p><strong>Diagnosis:</strong> Hipertensi Esensial</p>
+                        </li>
+                        <li class="info-card">
+                            <p><strong>Tanggal:</strong> 10 Februari 2025</p>
+                            <p><strong>Dokter:</strong> Dr. Salwa (Pediatri)</p>
+                            <p><strong>Tujuan:</strong> Pemeriksaan Anak</p>
+                            <p><strong>Diagnosis:</strong> Influenza</p>
+                        </li>
+                    </ul>
+
+                    <h4>Hasil Tes Lab</h4>
+                    <ul>
+                        <li class="info-card">
+                            <p><strong>Tanggal:</strong> 21 April 2025</p>
+                            <p><strong>Jenis Tes:</strong> Tes Darah Lengkap</p>
+                            <p><strong>Hasil:</strong> Normal</p>
+                            <p><a href="#" class="btn btn-secondary btn-small">Lihat Detail</a></p>
+                        </li>
+                        <li class="info-card">
+                            <p><strong>Tanggal:</strong> 11 Februari 2025</p>
+                            <p><strong>Jenis Tes:</strong> Urinalisis</p>
+                            <p><strong>Hasil:</strong> Normal</p>
+                            <p><a href="#" class="btn btn-secondary btn-small">Lihat Detail</a></p>
+                        </li>
+                    </ul>
+
+                    <h4>Daftar Obat</h4>
+                    <ul>
+                        <li class="info-card">
+                            <p><strong>Nama Obat:</strong> Lisinopril</p>
+                            <p><strong>Dosis:</strong> 10mg sekali sehari</p>
+                            <p><strong>Terakhir Diresepkan:</strong> 20 April 2025</p>
+                        </li>
+                    </ul>
+
+                    <h4>Alergi</h4>
+                    <ul>
+                        <li class="info-card">
+                            <p>Penisilin (reaksi ruam)</p>
+                        </li>
+                    </ul>
+
+                    <h4>Vaksinasi</h4>
+                    <ul>
+                        <li class="info-card">
+                            <p>Influenza (Terakhir: Oktober 2024)</p>
+                            <p>Tetanus (Terakhir: Januari 2020)</p>
+                        </li>
+                    </ul>
+
+                    <h4>Diagnosis Aktif</h4>
+                    <ul>
+                        <li class="info-card">
+                            <p>Hipertensi Esensial</p>
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="dashboard-section" id="appointments">
+                    <h3>Janji Temu</h3>
+                    <h4>Janji Temu Mendatang</h4>
+                    <ul>
+                        <li class="info-card">
+                            <p><strong>Tanggal:</strong> 15 Juli 2025</p>
+                            <p><strong>Waktu:</strong> 10:00 AM</p>
+                            <p><strong>Dokter:</strong> Dr. Kynan (Ortopedi)</p>
+                            <p><strong>Tujuan:</strong> Kontrol Pasca Operasi</p>
+                            <div class="button-group">
+                                <button class="btn btn-primary btn-small">Lihat Detail</button>
+                                <button class="btn btn-secondary btn-small">Batalkan</button>
+                            </div>
+                        </li>
+                    </ul>
+                    <h4>Riwayat Janji Temu</h4>
+                    <ul>
+                               <li class="info-card">
+                                    <p><strong>Tanggal:</strong> 20 April 2025</p>
+                                    <p><strong>Waktu:</strong> 09:30 AM</p>
+                                    <p><strong>Dokter:</strong> Dr. Alfa (Kardiologi)</p>
+                                    <p><strong>Status:</strong> Selesai</p>
+                                </li>
+                    </ul>
+                    <div class="button-group">
+                        <button class="btn btn-primary">Buat Janji Temu Baru</button>
+                    </div>
+                </section>
+
+                <section class="dashboard-section" id="messages">
+                    <h3>Pesan & Kotak Masuk</h3>
+                    <h4>Pesan Terbaru</h4>
+                    <ul>
+                        <li class="message-item">
+                            <strong>Dari: Tim Pendaftaran</strong>
+                            <p>Pengingat: Janji temu Anda dengan Dr. Kynan pada 15 Juli 2025 pukul 10:00 AM.</p>
+                            <span class="date">28 Juni 2025, 14:00</span>
+                        </li>
+                        <li class="message-item">
+                            <strong>Dari: Dr. Alfa</strong>
+                            <p>Hasil tes darah Anda sudah tersedia di Rekam Medis. Harap tinjau.</p>
+                            <span class="date">22 April 2025, 10:30</span>
+                        </li>
+                    </ul>
+                    <div class="form-section">
+                        <h4>Kirim Pesan Baru</h4>
+                        <label for="message-to">Kepada:</label>
+                        <input type="text" id="message-to" placeholder="Nama Dokter/Departemen">
+
+                        <label for="message-subject">Subjek:</label>
+                        <input type="text" id="message-subject" placeholder="Subjek Pesan">
+
+                        <label for="message-body">Pesan Anda:</label>
+                        <textarea id="message-body" placeholder="Tulis pesan Anda di sini..."></textarea>
+
+                        <button class="btn btn-primary">Kirim Pesan</button>
+                    </div>
+                </section>
+
+                <section class="dashboard-section" id="billing">
+                    <h3>Pembayaran & Tagihan</h3>
+                    <h4>Tagihan Belum Dibayar</h4>
+                    <ul>
+                        <li class="info-card">
+                            <p><strong>No. Tagihan:</strong> INV-202506001</p>
+                            <p><strong>Tanggal:</strong> 25 Juni 2025</p>
+                            <p><strong>Jumlah:</strong> Rp 250.000</p>
+                            <p><strong>Deskripsi:</strong> Konsultasi Kardiologi</p>
+                            <div class="button-group">
+                                <button class="btn btn-primary btn-small">Bayar Sekarang</button>
+                            </div>
+                        </li>
+                    </ul>
+                    <h4>Riwayat Pembayaran</h4>
+                    <ul>
+                        <li class="info-card">
+                            <p><strong>No. Tagihan:</strong> INV-202502005</p>
+                            <p><strong>Tanggal:</strong> 12 Februari 2025</p>
+                            <p><strong>Jumlah:</strong> Rp 150.000</p>
+                            <p><strong>Status:</strong> Lunas</p>
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="dashboard-section" id="forms">
+                    <h3>Formulir Pra-Kunjungan</h3>
+                    <p>Silakan isi formulir berikut sebelum kunjungan Anda untuk mempercepat proses pendaftaran.</p>
+                    <ul>
+                        <li class="info-card">
+                            <p><strong>Formulir Riwayat Kesehatan Terbaru</strong></p>
+                            <div class="button-group">
+                                <button class="btn btn-primary btn-small">Isi Formulir</button>
+                            </div>
+                        </li>
+                        <li class="info-card">
+                            <p><strong>Persetujuan Tindakan Medis</strong></p>
+                            <div class="button-group">
+                                <button class="btn btn-primary btn-small">Lihat & Setujui</button>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="dashboard-section" id="education">
+                    <h3>Edukasi Kesehatan</h3>
+                    <p>Temukan artikel dan sumber daya untuk membantu Anda mengelola kesehatan.</p>
+                    <ul>
+                        <li class="edu-item">
+                            <h4>Manfaat Olahraga Teratur untuk Jantung Sehat</h4>
+                            <p>Pelajari bagaimana aktivitas fisik dapat membantu mencegah penyakit jantung.</p>
+                            <a href="#">Baca Lebih Lanjut <i class="fas fa-external-link-alt"></i></a>
+                        </li>
+                        <li class="edu-item">
+                            <h4>Panduan Gizi untuk Anak-anak</h4>
+                            <p>Tips tentang diet seimbang untuk pertumbuhan anak yang optimal.</p>
+                            <a href="#">Baca Lebih Lanjut <i class="fas fa-external-link-alt"></i></a>
+                        </li>
+                        <li class="edu-item">
+                            <h4>Mengenali Gejala Awal Stroke</h4>
+                            <p>Informasi penting tentang tanda-tanda peringatan stroke dan kapan harus mencari pertolongan medis.</p>
+                            <a href="#">Baca Lebih Lanjut <i class="fas fa-external-link-alt"></i></a>
+                        </li>
+                    </ul>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scrolling for sidebar navigation (optional, if not using full page scroll)
+        document.querySelectorAll('.sidebar ul li a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Remove active class from all links
+                document.querySelectorAll('.sidebar ul li a').forEach(link => {
+                    link.classList.remove('active');
+                });
+                // Add active class to the clicked link
+                this.classList.add('active');
+
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+
+                // For a single-page app style, show/hide sections
+                document.querySelectorAll('.dashboard-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                if (targetElement) {
+                    targetElement.style.display = 'block';
+                    // Optional: scroll into view if the main content area itself scrolls
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Initialize by showing the first section
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.dashboard-section').forEach((section, index) => {
+                if (index !== 0) {
+                    section.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
